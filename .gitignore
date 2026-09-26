@@ -1,0 +1,28 @@
+# ---- Build output (Code Composer Studio / GCC) ----
+Debug/
+Release/
+*.o
+*.d
+*.out
+*.map
+*.exe
+*.bin
+*.axf
+
+# ---- IDE-local state ----
+.launches/
+.metadata/
+.settings/org.eclipse.cdt.debug.core.prefs
+
+# ---- Vendor datasheets / manuals (large, copyrighted) ----
+docs/datasheets/
+Quadcopter_Final_Project/docs/datasheets/
+
+# ---- Word lock files / OS junk ----
+~$*
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ---- Local cleanup folder ----
+_to_delete/
