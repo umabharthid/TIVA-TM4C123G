@@ -1,37 +1,33 @@
-# Assignment 5 — Interrupt-Driven Menu on a 4-Digit 7-Segment Display
+# Assignment 5: 7-segment menu for the RGB LED
 
-A five-state menu controls the LaunchPad's RGB LED. The current mode, colour and blink speed are
-shown on a multiplexed 4-digit 7-segment display. Switches are handled with GPIO edge interrupts,
-and SysTick (1 ms) refreshes the display and times the blinking.
+A small menu on a 4-digit 7-segment display that sets the colour and blink speed of the RGB LED. The switches use GPIO falling-edge interrupts. SysTick runs at 1 ms to multiplex the display and keep time for blinking.
 
 ## Menu
-**SW2 (PF0)** steps through the modes; **SW1 (PF4)** changes the value in the current mode.
 
-| Display | Mode | SW1 action |
-|---|---|---|
-| `SC` | Select Colour | Next colour (0–7, RGB bit combinations) |
-| `SP` | Select sPeed | Next blink speed (0–7) |
-| `En` | ENable | — LED blinks with the chosen colour and speed |
-| `St` | SToP | — LED off |
-| `rS` | ReSet | — colour and speed reset to 0 |
+SW2 moves to the next mode. SW1 steps the number (1-7) in the colour and speed modes.
 
-Display layout: `[mode][mode][colour][speed]`. Blink half-periods range from 2000 ms (speed 0)
-down to 100 ms (speed 7).
+```
+rS . .   reset (start here)
+SC x .   select colour  - 1 red, 2 blue, 3 green, 4 yellow, 5 magenta, 6 cyan, 7 white
+SP x y   select speed   - 1 is slowest (2000 ms), 7 is fastest (100 ms)
+En x y   LED blinks with the chosen colour and speed
+St x y   stop, LED off
+```
 
-## Hardware Connections
-| Signal | Pin |
-|---|---|
-| 7-segment segments a–g, dp | PB0–PB7 (driven active low) |
-| Digit enables (4 digits) | PA2–PA5 |
-| RGB LED | PF1 (R), PF2 (B), PF3 (G) |
-| SW1 / SW2 | PF4 / PF0 (internal pull-ups, falling-edge interrupts) |
+Then it goes back to `rS`.
+
+## Pins
+
+- Segments a-g, dp: PB0-PB7
+- Digit select: PA4-PA7
+- RGB LED: PF1-PF3
+- SW1 / SW2: PF4 / PF0
 
 ## Files
-| File | Purpose |
-|---|---|
-| `main.c` | Application code |
-| `Assignment_5.docx` | Assignment report |
 
-## Build & Run
-Create a TM4C123GH6PM project in Code Composer Studio (or reuse the Assignment 2 project), replace
-`main.c`, and register `GPIOPortF_Handler` and `SysTick_Handler` in the startup file's vector table.
+- `main.c` - menu logic and switch interrupt (`GPIOF_Handler`)
+- `drivers/sevenseg.c/.h` - display driver; its `SysTick_Handler` does the multiplexing and keeps `system_time`
+- `tm4c123gh6pm_startup_ccs_gcc.c` - startup file with `GPIOF_Handler` and `SysTick_Handler` registered
+- `Assignment_5.docx` - report
+
+To build, add these files to a TM4C123GH6PM project in CCS. `main.c` includes `drivers/sevenseg.h`, so keep the folder as it is.

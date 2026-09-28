@@ -1,30 +1,26 @@
-# E3-257 Embedded System Design — Assignments & Project
+# E3-257 Embedded System Design
 
-Coursework for **E3-257 Embedded System Design** (M.Tech, DESE, IISc Bangalore), Semester 2.
-All embedded work targets the **TI Tiva C Series TM4C123GH6PM LaunchPad** and is written at the
-register level using `inc/tm4c123gh6pm.h` (no TivaWare driverlib).
+My assignments and final project for E3-257 (Embedded System Design), Semester 2, M.Tech DESE at IISc.
 
-**Author:** Uma Bharathi D
+Everything runs on the TI Tiva C TM4C123GH6PM LaunchPad. I wrote the code at register level using `inc/tm4c123gh6pm.h` and didn't use TivaWare driverlib. I built it in Code Composer Studio with the GNU ARM compiler.
 
-## Contents
+## What's here
 
-| Folder | Topic | Peripherals |
-|---|---|---|
-| [Assignment_1_Student_Records_Linked_List](Assignment_1_Student_Records_Linked_List) | Menu-driven student database using a linked list (host PC, C) | — |
-| [Assignment_2_RGB_LED_Switches](Assignment_2_RGB_LED_Switches) | RGB LED colour / blink-rate control with onboard switches | GPIO |
-| [Assignment_3_UART_LCD](Assignment_3_UART_LCD) | UART command interface driving an LED and a 16x2 LCD | UART0, GPIO, LCD |
-| [Assignment_5_7Segment_Menu_RGB](Assignment_5_7Segment_Menu_RGB) | Interrupt-driven menu on a 4-digit 7-segment display | GPIO interrupts, SysTick |
-| [Assignment_6_UART_Switch_Control](Assignment_6_UART_Switch_Control) | Same menu, controllable from either switches or UART | UART0 interrupt, GPIO, SysTick |
-| [Assignment_7_ADC_PWM](Assignment_7_ADC_PWM) | Potentiometer (ADC) to PWM duty cycle | ADC0, PWM0 |
-| [Washing_Machine_Controller](Washing_Machine_Controller) | Washing-machine state machine with LCD, 7-segment and UART | UART, LCD, GPIO, SysTick |
-| [Quadcopter_Final_Project](Quadcopter_Final_Project) | Quadcopter flight controller (final project) | PWM, SPI/I2C (MPU-9250), GPIO capture, UART |
+- `Assignment_2_RGB_LED_Switches` - blink the RGB LED, SW1 changes colour and SW2 changes speed
+- `Assignment_3_Digital_Safe` - 4x4 keypad + 7-segment display acting as a PIN-locked safe
+- `Assignment_4_UART_LCD` - typed UART commands control an LED and a 16x2 LCD
+- `Assignment_5_7Segment_Menu_RGB` - menu on a 4-digit 7-segment display, switches handled with interrupts
+- `Assignment_6_UART_Switch_Control` - same menu as 5, but it can also be driven from UART
+- `Assignment_7_ADC_PWM` - potentiometer on the ADC sets a PWM duty cycle
+- `Assignment_8_Washing_Machine` - washing machine controller (keypad, LCD, 7-seg, motor PWM, UART debug commands)
+- `Quadcopter_Final_Project` - quadcopter rate controller with the MPU-9250 gyro
 
-## Building the TM4C123 code
+Where an assignment has separate driver files (7-segment, UART, LCD, keypad), they're in a `drivers/` folder inside that assignment. The versions change a bit between assignments, so each one keeps its own copy.
 
-The embedded projects were built with **Code Composer Studio (CCS)** using the GNU ARM toolchain.
-Assignments 2 and 3 include complete CCS projects that can be imported directly
-(*File → Import → CCS Projects*). For folders that contain only a `main.c`, create a new
-TM4C123GH6PM project in CCS (or copy the Assignment 2 project), replace `main.c`, and make sure the
-interrupt handlers used by that file are registered in `tm4c123gh6pm_startup_ccs_gcc.c`.
+## Building
 
-The TM4C123GH6PM datasheet is kept locally in `docs/datasheets/` but is not committed.
+Assignments 2, 4 and 8 are full CCS projects, so you can import them with File > Import > CCS Projects.
+
+For the others, make a new TM4C123GH6PM project in CCS and copy in the `.c` files (and the `drivers/` folder if there is one). Check that the interrupt handlers the code uses are registered in the startup file's vector table. Where a startup file is included in the folder, it already has them.
+
+You'll need TivaWare installed and on the include path for `inc/tm4c123gh6pm.h`.

@@ -12,7 +12,7 @@ Release/
 # ---- IDE-local state ----
 .launches/
 .metadata/
-.settings/org.eclipse.cdt.debug.core.prefs
+**/.settings/org.eclipse.cdt.debug.core.prefs
 
 # ---- Vendor datasheets / manuals (large, copyrighted) ----
 docs/datasheets/
@@ -24,5 +24,3 @@ Thumbs.db
 desktop.ini
 .DS_Store
 
-# ---- Local cleanup folder ----
-_to_delete/

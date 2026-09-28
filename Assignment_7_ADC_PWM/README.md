@@ -1,30 +1,21 @@
-# Assignment 7 — Part I: Potentiometer (ADC) to PWM
+# Assignment 7 (Part 1): Potentiometer to PWM
 
-Reads an analog voltage on ADC0 and maps it linearly onto the duty cycle of a PWM output, e.g.
-to control LED brightness or motor speed with a potentiometer.
+Reads a potentiometer on the ADC and uses it to set the duty cycle of a PWM output. I used it for LED brightness and motor speed.
 
-## How It Works
-- **ADC0, sample sequencer 3**, software-triggered, reads AIN0 on **PE3** (12-bit, 0–4095).
-- **PWM0 generator 0** drives **M0PWM0 on PB6**. PWM clock = system clock / 64, `LOAD = 2500`
-  (about 100 Hz at the default 16 MHz system clock).
-- The main loop continuously sets `CMPA = LOAD − (adc × LOAD / 4095)`, so duty cycle rises from
-  0 % to 100 % as the input goes from 0 V to 3.3 V.
-- SysTick is configured for a 1 ms tick (`tick` counter) for later parts of the assignment.
+## How it works
 
-## Hardware Connections
-| Signal | Pin |
-|---|---|
-| Potentiometer wiper (0–3.3 V) | PE3 / AIN0 |
-| PWM output | PB6 / M0PWM0 |
+- ADC0, sample sequencer 3, software triggered, reading AIN0 on PE3 (12-bit, 0-4095)
+- PWM0 generator 0 drives M0PWM0 on PB6, with `LOAD = 2500` and the PWM clock at sysclk/64
+- The main loop keeps setting `CMPA = LOAD - adc * LOAD / 4095`, so 0 V gives 0% duty and 3.3 V gives 100%
+- SysTick is set up for a 1 ms tick, which I planned to use in the later parts
 
-## Files
-| File | Purpose |
-|---|---|
-| `part1_adc_pwm.c` | Part I source code |
+## Pins
+
+- Pot wiper: PE3 (AIN0)
+- PWM out: PB6
 
 ## Notes
-- The header comment mentions keypad control with status on an LCD; that part is not implemented
-  in this file yet.
-- `uart.h` is included but not used, and is not part of this folder. Remove the include or add
-  the header before building.
-- Register `SysTick_Handler` in the startup file's vector table.
+
+- The comment at the top mentions keypad control and an LCD. That's the next part and isn't in this file yet.
+- It has `#include "uart.h"` but doesn't use it. Remove the line, or copy `drivers/uart.*` from Assignment 6, before building.
+- `SysTick_Handler` needs to be in the vector table.

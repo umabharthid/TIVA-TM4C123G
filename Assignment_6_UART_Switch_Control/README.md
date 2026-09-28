@@ -1,46 +1,39 @@
-# Assignment 6 — Menu Control from Switches or UART
+# Assignment 6: Menu from switches or UART
 
-Extends Assignment 5: the same five-mode RGB LED menu can be driven either from the onboard
-switches or from a serial terminal, with only one source in control at a time. Both the switches
-and UART receive are interrupt driven, with 30 ms switch debouncing done in the SysTick handler.
+This extends Assignment 5. It's the same 7-segment menu for the RGB LED, but now you can also drive it from a serial terminal. Only one of the two is in control at a time.
 
-## Modes
-| Display | Mode | Effect |
-|---|---|---|
-| `SC` | Select Colour | "Increment" selects the next of 8 colours |
-| `SP` | Select sPeed | "Increment" selects the next of 8 blink speeds |
-| `En` | ENable | LED starts blinking |
-| `St` | SToP | LED stops |
-| `rS` | ReSet | Colour and speed reset to 0 (start-up mode) |
+## Switch mode (default)
 
-Display layout: `[mode][mode][colour][speed]`.
+Same as Assignment 5. SW2 goes to the next mode (rS > SC > SP > En > St) and SW1 steps the value 1-7.
 
-## Controls
-| Switch mode (default) | UART mode | Action |
-|---|---|---|
-| SW2 (PF0) | `m` | Next mode |
-| SW1 (PF4) | `i` | Increment colour / speed |
-| — | `c` | Hand control to UART (switches ignored) |
-| — | `x` | Hand control back to switches |
+## UART mode
 
-UART0 runs at **115200 baud, 8N1**. Commands are single characters, case-insensitive, and echoed
-back; backspace is handled.
+UART0 at 115200 baud, 8N1. Send each command followed by Enter.
 
-## Hardware Connections
-| Signal | Pin |
-|---|---|
-| 7-segment segments | PB0–PB7 |
-| Digit enables | PA4–PA7 |
-| UART0 RX / TX | PA0 / PA1 (USB virtual COM port) |
-| RGB LED | PF1–PF3 |
-| SW1 / SW2 | PF4 / PF0 |
+```
+Enter UART    take control from the switches
+Rst           reset colour and speed
+Sel_color     colour select mode
+Sel_speed     speed select mode
+i             then a number 1-7 to pick the colour or speed
+En            start blinking
+Stop          stop
+Exit UART     go back to switch control
+```
+
+The switches are ignored while UART mode is on.
+
+## Pins
+
+- Segments: PB0-PB7, digit select: PA4-PA7
+- UART0: PA0 / PA1 (USB COM port)
+- RGB LED: PF1-PF3
+- SW1 / SW2: PF4 / PF0
 
 ## Files
-| File | Purpose |
-|---|---|
-| `main.c` | Application code |
-| `Assignment_6.docx` | Assignment report |
 
-## Build & Run
-Create a TM4C123GH6PM project in Code Composer Studio, replace `main.c`, and register
-`GPIOF_Handler`, `UART0_Handler` and `SysTick_Handler` in the startup file's vector table.
+- `main.c` - menu logic, switch interrupt, UART command handling
+- `drivers/sevenseg.c/.h` - display driver (uses SysTick)
+- `drivers/uart.c/.h` - polled UART0 driver with a line buffer and `istypeduart()` for matching commands
+- `tm4c123gh6pm_startup_ccs_gcc.c` - startup file with the handlers registered
+- `Assignment_6.docx` - report
